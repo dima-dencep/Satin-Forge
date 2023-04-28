@@ -41,7 +41,7 @@ public final class BlockRenderLayerRegistry {
     }
     
     public Set<RenderLayer> getLayers() {
-        registryLocked = true;
+        // registryLocked = true; TODO forge break this
         return renderLayers;
     }
 }
