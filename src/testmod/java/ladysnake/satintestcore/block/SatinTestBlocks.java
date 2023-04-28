@@ -20,14 +20,17 @@ package ladysnake.satintestcore.block;
 import ladysnake.satintestcore.SatinTestCore;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.util.Identifier;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 public class SatinTestBlocks {
-    public static final Block DEBUG_BLOCK = new Block(Block.Settings.of(Material.STONE));
+    public static final DeferredRegister<Block> REGISTER = DeferredRegister.create(ForgeRegistries.BLOCKS, SatinTestCore.MOD_ID);
+
+    public static final RegistryObject<Block> DEBUG_BLOCK = REGISTER.register("debug_block", () -> new Block(Block.Settings.of(Material.STONE)));
     
-    public static void init() {
-        Registry.register(Registries.BLOCK, new Identifier(SatinTestCore.MOD_ID, "debug_block"), DEBUG_BLOCK);
+    public static void init(IEventBus bus) {
+        REGISTER.register(bus);
     }
 }

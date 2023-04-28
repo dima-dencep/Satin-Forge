@@ -27,33 +27,37 @@ import ladysnake.satin.api.managed.ManagedShaderEffect;
 import ladysnake.satin.api.managed.ShaderEffectManager;
 import ladysnake.satin.api.managed.uniform.Uniform1f;
 import ladysnake.satin.api.util.RenderLayerHelper;
-import ladysnake.satintestcore.block.SatinTestBlocks;
-import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
-import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
-import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
+import ladysnake.satintestcore.SatinTestCore;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.entity.boss.WitherEntity;
 import net.minecraft.entity.passive.IronGolemEntity;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
+import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
+import net.minecraftforge.event.level.BlockEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 public final class SatinRenderLayerTest {
+    public static final DeferredRegister<EntityType<?>> REGISTER = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, SatinTestCore.MOD_ID);
+
 
     /* * * * ManagedShaderEffect-based RenderLayer entity rendering * * * */
 
-    public static final EntityType<IronGolemEntity> ILLUSION_GOLEM =
-            Registry.register(
-                    Registries.ENTITY_TYPE,
-                    new Identifier("satinrenderlayer", "illusion_golem"),
-                    FabricEntityTypeBuilder.create(SpawnGroup.CREATURE, IronGolemEntity::new).dimensions(EntityType.IRON_GOLEM.getDimensions()).build()
-            );
+    public static final RegistryObject<EntityType<IronGolemEntity>> ILLUSION_GOLEM = REGISTER.register(
+            "illusion_golem",
+            () -> EntityType.Builder.create(IronGolemEntity::new, SpawnGroup.CREATURE)
+                    .setDimensions(EntityType.IRON_GOLEM.getWidth(), EntityType.IRON_GOLEM.getHeight()).build("illusion_golem")
+    );
 
     public static final ManagedShaderEffect illusionEffect = ShaderEffectManager.getInstance().manage(new Identifier("satinrenderlayer", "shaders/post/illusion.json"),
             effect -> effect.setUniformValue("ColorModulate", 1.2f, 0.7f, 0.2f, 1.0f));
@@ -61,43 +65,67 @@ public final class SatinRenderLayerTest {
 
     /* * * * ManagedShaderProgram-based RenderLayer entity rendering * * * */
 
-    public static final EntityType<WitherEntity> RAINBOW_WITHER =
-            Registry.register(
-                    Registries.ENTITY_TYPE,
-                    new Identifier("satinrenderlayer", "rainbow_wither"),
-                    FabricEntityTypeBuilder.create(SpawnGroup.CREATURE, (EntityType<WitherEntity> entityType, World world) -> {
+    public static final RegistryObject<EntityType<WitherEntity>> RAINBOW_WITHER = REGISTER.register(
+            "rainbow_wither",
+            () -> EntityType.Builder.create((EntityType<WitherEntity> entityType, World world) -> {
                         WitherEntity witherEntity = new WitherEntity(entityType, world);
                         witherEntity.setAiDisabled(true);
                         return witherEntity;
-                    }).dimensions(EntityType.WITHER.getDimensions()).build()
-            );
+                    }, SpawnGroup.CREATURE)
+                    .setDimensions(EntityType.WITHER.getWidth(), EntityType.WITHER.getHeight()).build("rainbow_wither")
+    );
 
     public static final ManagedCoreShader rainbow = ShaderEffectManager.getInstance().manageCoreShader(new Identifier("satinrenderlayer", "rainbow"));
     private static final Uniform1f uniformSTime = rainbow.findUniform1f("STime");
 
     private static int ticks;
 
-    public static void onInitializeClient() {
+    public SatinRenderLayerTest(IEventBus bus) {
+        REGISTER.register(bus);
+
+        MinecraftForge.EVENT_BUS.register(this);
+
+        bus.addListener(this::onRegisterRenderers);
+        bus.addListener(this::onRegisterModelLayer);
+
         RenderLayer blockRenderLayer = illusionBuffer.getRenderLayer(RenderLayer.getTranslucent());
         RenderLayerHelper.registerBlockRenderLayer(blockRenderLayer);
-        BlockRenderLayerMap.INSTANCE.putBlock(SatinTestBlocks.DEBUG_BLOCK, blockRenderLayer);
-        FabricDefaultAttributeRegistry.register(ILLUSION_GOLEM, IronGolemEntity.createIronGolemAttributes());
-        FabricDefaultAttributeRegistry.register(RAINBOW_WITHER, WitherEntity.createWitherAttributes());
-        EntityRendererRegistry.register(ILLUSION_GOLEM, IllusionGolemEntityRenderer::new);
-        EntityRendererRegistry.register(RAINBOW_WITHER, RainbowWitherEntityRenderer::new);
-        ClientTickEvents.END_CLIENT_TICK.register(client -> ticks++);
-        EntitiesPreRenderCallback.EVENT.register((camera, frustum, tickDelta) -> uniformSTime.set((ticks + tickDelta) * 0.05f));
-        ShaderEffectRenderCallback.EVENT.register(tickDelta -> {
-                    MinecraftClient client = MinecraftClient.getInstance();
-                    illusionEffect.render(tickDelta);
-                    client.getFramebuffer().beginWrite(true);
-                    RenderSystem.enableBlend();
-                    RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SrcFactor.ZERO, GlStateManager.DstFactor.ONE);
-                    illusionBuffer.draw(client.getWindow().getFramebufferWidth(), client.getWindow().getFramebufferHeight(), false);
-                    illusionBuffer.clear();
-                    client.getFramebuffer().beginWrite(true);
-                    RenderSystem.disableBlend();
-                }
-        );
+
+        // BlockRenderLayerMap.INSTANCE.putBlock(SatinTestBlocks.DEBUG_BLOCK, blockRenderLayer);
+    }
+
+    @SubscribeEvent
+    public void onRegisterModelLayer(EntityAttributeCreationEvent event) {
+        event.put(ILLUSION_GOLEM.get(), IronGolemEntity.createIronGolemAttributes().build());
+        event.put(RAINBOW_WITHER.get(), WitherEntity.createWitherAttributes().build());
+    }
+
+    @SubscribeEvent
+    public void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        event.registerEntityRenderer(ILLUSION_GOLEM.get(), IllusionGolemEntityRenderer::new);
+        event.registerEntityRenderer(RAINBOW_WITHER.get(), RainbowWitherEntityRenderer::new);
+    }
+
+    @SubscribeEvent
+    public void onClientTickEvent(TickEvent.ClientTickEvent event) {
+        if (event.phase == TickEvent.Phase.END) ticks++;
+    }
+
+    @SubscribeEvent
+    public void onEntitiesPreRender(EntitiesPreRenderCallback event) {
+        uniformSTime.set((ticks + event.tickDelta) * 0.05f);
+    }
+
+    @SubscribeEvent
+    public void onShaderEffectRender(ShaderEffectRenderCallback event) {
+        MinecraftClient client = MinecraftClient.getInstance();
+        illusionEffect.render(event.tickDelta);
+        client.getFramebuffer().beginWrite(true);
+        RenderSystem.enableBlend();
+        RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SrcFactor.ZERO, GlStateManager.DstFactor.ONE);
+        illusionBuffer.draw(client.getWindow().getFramebufferWidth(), client.getWindow().getFramebufferHeight(), false);
+        illusionBuffer.clear();
+        client.getFramebuffer().beginWrite(true);
+        RenderSystem.disableBlend();
     }
 }

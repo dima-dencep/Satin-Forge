@@ -31,25 +31,25 @@ import java.util.List;
 
 public class DebugItem extends Item {
     private int debugMode;
-    private final List<DebugCallback> callbacks = new ArrayList<>();
+    private static final List<DebugCallback> callbacks = new ArrayList<>();
 
     public DebugItem(Settings settings) {
         super(settings);
     }
 
-    public void registerDebugCallback(DebugCallback callback) {
-        this.callbacks.add(callback);
+    public static void registerDebugCallback(DebugCallback callback) {
+        DebugItem.callbacks.add(callback);
     }
 
     @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
         if (player.isSneaking() && !world.isClient) {
-            if (this.callbacks.size() > 1) {
-                debugMode = (debugMode + 1) % this.callbacks.size();
+            if (DebugItem.callbacks.size() > 1) {
+                debugMode = (debugMode + 1) % DebugItem.callbacks.size();
                 player.sendMessage(Text.translatable("Switched mode to %s", debugMode), true);
             }
         } else {
-            this.callbacks.get(debugMode).use(world, player, hand);
+            DebugItem.callbacks.get(debugMode).use(world, player, hand);
         }
         return new TypedActionResult<>(ActionResult.SUCCESS, player.getStackInHand(hand));
     }

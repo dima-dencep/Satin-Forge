@@ -19,18 +19,25 @@ package ladysnake.satintestcore.item;
 
 import ladysnake.satintestcore.SatinTestCore;
 import ladysnake.satintestcore.block.SatinTestBlocks;
+import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 public class SatinTestItems {
-    public static final DebugItem DEBUG_ITEM = new DebugItem(new Item.Settings());
-    public static final BlockItem DEBUG_BLOCK = new BlockItem(SatinTestBlocks.DEBUG_BLOCK, new Item.Settings());
+    public static final DeferredRegister<Item> REGISTER = DeferredRegister.create(ForgeRegistries.ITEMS, SatinTestCore.MOD_ID);
 
-    public static void init() {
-        Registry.register(Registries.ITEM, new Identifier(SatinTestCore.MOD_ID, "debug_item"), DEBUG_ITEM);
-        Registry.register(Registries.ITEM, Registries.BLOCK.getId(SatinTestBlocks.DEBUG_BLOCK), DEBUG_BLOCK);
+    public static final RegistryObject<DebugItem> DEBUG_ITEM = REGISTER.register("debug_item", () -> new DebugItem(new Item.Settings()));
+    public static final RegistryObject<BlockItem> DEBUG_BLOCK = REGISTER.register("debug_block", () -> new BlockItem(SatinTestBlocks.DEBUG_BLOCK.get(), new Item.Settings()));
+    // Registries.BLOCK.getId(SatinTestBlocks.DEBUG_BLOCK.get()).getPath()
+
+    public static void init(IEventBus bus) {
+        REGISTER.register(bus);
     }
 }
