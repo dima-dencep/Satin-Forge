@@ -28,6 +28,7 @@ import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraftforge.common.MinecraftForge;
 import org.joml.Matrix4f;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
@@ -60,7 +61,7 @@ public abstract class WorldRendererMixin {
             at = @At(value = "CONSTANT", args = "stringValue=entities", ordinal = 0)
     )
     private void firePreRenderEntities(MatrixStack matrix, float tickDelta, long time, boolean renderBlockOutline, Camera camera, GameRenderer renderer, LightmapTextureManager lmTexManager, Matrix4f matrix4f, CallbackInfo ci) {
-        EntitiesPreRenderCallback.EVENT.invoker().beforeEntitiesRender(camera, frustum, tickDelta);
+        MinecraftForge.EVENT_BUS.post(new EntitiesPreRenderCallback(camera, frustum, tickDelta));
     }
 
     @Inject(
@@ -68,7 +69,7 @@ public abstract class WorldRendererMixin {
             at = @At(value = "CONSTANT", args = "stringValue=blockentities", ordinal = 0)
     )
     private void firePostRenderEntities(MatrixStack matrix, float tickDelta, long time, boolean renderBlockOutline, Camera camera, GameRenderer renderer, LightmapTextureManager lmTexManager, Matrix4f matrix4f, CallbackInfo ci) {
-        EntitiesPostRenderCallback.EVENT.invoker().onEntitiesRendered(camera, frustum, tickDelta);
+        MinecraftForge.EVENT_BUS.post(new EntitiesPostRenderCallback(camera, frustum, tickDelta));
     }
 
     @Inject(
@@ -81,6 +82,6 @@ public abstract class WorldRendererMixin {
     )
     private void hookPostWorldRender(MatrixStack matrices, float tickDelta, long nanoTime, boolean renderBlockOutline, Camera camera, GameRenderer renderer, LightmapTextureManager lmTexManager, Matrix4f matrix4f, CallbackInfo ci) {
         ((ReadableDepthFramebuffer) MinecraftClient.getInstance().getFramebuffer()).freezeDepthMap();
-        PostWorldRenderCallbackV2.EVENT.invoker().onWorldRendered(matrices, camera, tickDelta, nanoTime);
+        MinecraftForge.EVENT_BUS.post(new PostWorldRenderCallbackV2(matrices, camera, tickDelta, nanoTime));
     }
 }

@@ -17,22 +17,22 @@
  */
 package ladysnake.satin.api.event;
 
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.Frustum;
+import net.minecraftforge.eventbus.api.Event;
 
-@FunctionalInterface
-public interface EntitiesPostRenderCallback {
+public class EntitiesPostRenderCallback extends Event {
+    public Camera camera;
+    public Frustum frustum;
+    public float tickDelta;
+
     /**
      * Fired after Minecraft has rendered all entities and before it renders block entities.
      */
-    Event<EntitiesPostRenderCallback> EVENT = EventFactory.createArrayBacked(EntitiesPostRenderCallback.class,
-            (listeners) -> (camera, frustum, tickDelta) -> {
-                for (EntitiesPostRenderCallback handler : listeners) {
-                    handler.onEntitiesRendered(camera, frustum, tickDelta);
-                }
-            });
+    public EntitiesPostRenderCallback(Camera camera, Frustum frustum, float tickDelta) {
+        this.camera = camera;
+        this.frustum = frustum;
+        this.tickDelta = tickDelta;
+    }
 
-    void onEntitiesRendered(Camera camera, Frustum frustum, float tickDelta);
 }

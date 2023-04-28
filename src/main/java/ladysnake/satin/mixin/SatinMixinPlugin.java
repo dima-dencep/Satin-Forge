@@ -17,7 +17,7 @@
  */
 package ladysnake.satin.mixin;
 
-import net.fabricmc.loader.api.FabricLoader;
+import net.minecraftforge.fml.loading.LoadingModList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.tree.ClassNode;
@@ -33,13 +33,13 @@ public final class SatinMixinPlugin implements IMixinConfigPlugin {
     private static final boolean ALLOW_RENDER_LAYER_MIXINS;
 
     static {
-        FabricLoader loader = FabricLoader.getInstance();
-        if (loader.isModLoaded("canvas")) {
+        LoadingModList loader = LoadingModList.get();
+        if (loader.getModFileById("canvas") != null) {
             LOGGER.warn("[Satin] Canvas is present, custom block renders will not work");
             ALLOW_RENDER_LAYER_MIXINS = false;
         } else {
-            if (loader.isModLoaded("sodium")) {
-                LOGGER.warn("[Satin] Sodium is present, custom block renders may not work");
+            if (loader.getModFileById("rubidium") != null) {
+                LOGGER.warn("[Satin] Rubidium is present, custom block renders may not work");
             }
             ALLOW_RENDER_LAYER_MIXINS = true;
         }
@@ -69,12 +69,14 @@ public final class SatinMixinPlugin implements IMixinConfigPlugin {
     }
 
     @Override
-    public List<String> getMixins() {
-        List<String> compatMixins = new ArrayList<>();
-        if (FabricLoader.getInstance().isModLoaded("iris")) {
+    public List<String> getMixins() { // TODO oculus compat?
+        /*List<String> compatMixins = new ArrayList<>();
+        if (LoadingModList.get().getModFileById("oculus") != null) {
             compatMixins.add("iris.IrisRenderLayerWrapperMixin");
         }
-        return compatMixins;
+        return compatMixins;*/
+
+        return null;
     }
 
     @Override

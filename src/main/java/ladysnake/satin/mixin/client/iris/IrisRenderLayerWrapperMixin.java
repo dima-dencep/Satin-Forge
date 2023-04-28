@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see <https://www.gnu.org/licenses>.
  */
-package ladysnake.satin.mixin.client.iris;
+/*package ladysnake.satin.mixin.client.iris; TODO
 
 import ladysnake.satin.impl.RenderLayerDuplicator;
 import net.coderbot.iris.layer.IrisRenderTypeWrapper;
@@ -45,4 +45,4 @@ public abstract class IrisRenderLayerWrapperMixin implements RenderLayerDuplicat
     public RenderLayer.MultiPhaseParameters satin$copyPhaseParameters(Consumer<RenderLayer.MultiPhaseParameters.Builder> op) {
         return RenderLayerDuplicator.copyPhaseParameters(this.unwrap(), op);
     }
-}
+}*/

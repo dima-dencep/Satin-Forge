@@ -17,23 +17,24 @@
  */
 package ladysnake.satin.api.event;
 
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraftforge.eventbus.api.Event;
 
-@FunctionalInterface
-public interface PostWorldRenderCallbackV2 {
+public class PostWorldRenderCallbackV2 extends Event {
+    public MatrixStack matrices;
+    public Camera camera;
+    public float tickDelta;
+    public long nanoTime;
+
     /**
      * Fired after Minecraft has rendered everything in the world, before it renders hands, HUDs and GUIs.
      */
-    Event<PostWorldRenderCallbackV2> EVENT = EventFactory.createArrayBacked(PostWorldRenderCallbackV2.class,
-            (listeners) -> (matrices, camera, tickDelta, nanoTime) -> {
-                PostWorldRenderCallback.EVENT.invoker().onWorldRendered(camera, tickDelta, nanoTime);
-                for (PostWorldRenderCallbackV2 handler : listeners) {
-                    handler.onWorldRendered(matrices, camera, tickDelta, nanoTime);
-                }
-            });
+    public PostWorldRenderCallbackV2(MatrixStack matrices, Camera camera, float tickDelta, long nanoTime) {
+        this.matrices = matrices;
+        this.camera = camera;
+        this.tickDelta = tickDelta;
+        this.nanoTime = nanoTime;
+    }
 
-    void onWorldRendered(MatrixStack matrices, Camera camera, float tickDelta, long nanoTime);
 }

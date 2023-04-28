@@ -17,28 +17,28 @@
  */
 package ladysnake.satin.api.event;
 
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.client.option.GraphicsMode;
 import net.minecraft.client.render.Camera;
+import net.minecraftforge.eventbus.api.Event;
 
 /**
  * @see PostWorldRenderCallbackV2
  */
-@FunctionalInterface
-public interface PostWorldRenderCallback {
+public class PostWorldRenderCallback extends Event {
+    public Camera camera;
+    public float tickDelta;
+    public long nanoTime;
+
     /**
      * Fired after Minecraft has rendered everything in the world, before it renders hands, HUDs and GUIs.
      *
      * <p>{@link net.minecraft.client.gl.PostEffectProcessor}s <strong>must not</strong> be rendered in this callback, as they will prevent
      * {@link GraphicsMode#FABULOUS fabulous graphics} and other effects from working properly.
      */
-    Event<PostWorldRenderCallback> EVENT = EventFactory.createArrayBacked(PostWorldRenderCallback.class,
-            (listeners) -> (camera, tickDelta, nanoTime) -> {
-                for (PostWorldRenderCallback handler : listeners) {
-                    handler.onWorldRendered(camera, tickDelta, nanoTime);
-                }
-            });
+    public PostWorldRenderCallback(Camera camera, float tickDelta, long nanoTime) {
+        this.camera = camera;
+        this.tickDelta = tickDelta;
+        this.nanoTime = nanoTime;
+    }
 
-    void onWorldRendered(Camera camera, float tickDelta, long nanoTime);
 }
