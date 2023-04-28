@@ -1,25 +1,12 @@
 plugins {
-    id 'fabric-loom' version "1.0.+"
-    id 'io.github.ladysnake.chenille' version '0.10.1'
+    id 'dev.architectury.loom' version "1.0.+"
     id 'io.github.juuxel.loom-quiltflower' version "1.8.0"
+    id 'maven-publish'
 }
 
 archivesBaseName = project.archives_base_name
 group = project.maven_group
 version = project.mod_version
-
-chenille {
-    configurePublishing {
-        mainArtifact = remapJar.archiveFile
-        withArtifactory()
-        withCurseforgeRelease()
-        withModrinthRelease()
-        withGithubRelease()
-    }
-
-    license = project.license_header
-    javaVersion = 17
-}
 
 sourceSets {
     testmod {
@@ -39,9 +26,9 @@ loom {
 }
 
 repositories {
-    chenille.repositories {
-        terraformers()
-        modrinth()
+    maven {
+        name = "Modrinth"
+        url = "https://api.modrinth.com/maven"
     }
 }
 
@@ -49,10 +36,9 @@ dependencies {
     // To change the versions see the gradle.properties file
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-    modApi "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
-    modLocalRuntime "com.terraformersmc:modmenu:${project.modmenu_version}"
-    modCompileOnly ("maven.modrinth:iris:${project.iris_version}")
+    forge "net.minecraftforge:forge:${project.forge_version}"
+
+    modCompileOnly ("maven.modrinth:oculus:${project.iris_version}")
 
     compileOnly "org.jetbrains:annotations:${jb_annotations_version}"
     compileOnly "com.google.code.findbugs:jsr305:${findbugs_version}"
@@ -67,13 +53,22 @@ dependencies {
 processResources {
     inputs.property "version", project.version
 
-    filesMatching("fabric.mod.json") {
+    filesMatching("META-INF/mods.toml") {
         expand "version": project.version
     }
 }
 
 loom {
     accessWidenerPath = file("src/main/resources/satin.accesswidener")
+
+    forge {
+        convertAccessWideners = true
+        extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
+
+        mixinConfigs = [
+                "mixins.satin.client.json"
+        ]
+    }
 }
 
 quiltflower {
@@ -93,3 +88,21 @@ jar {
     }
 }
 
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+
+    repositories {
+        maven {
+            name = "ConstructLegacy"
+            url = "https://repo.constructlegacy.ru/public"
+            credentials {
+                username = System.getenv("MAVEN_USERNAME")
+                password = System.getenv("MAVEN_PASSWORD")
+            }
+        }
+    }
+}
