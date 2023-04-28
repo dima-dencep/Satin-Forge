@@ -121,8 +121,6 @@ public final class ReloadableShaderEffectManager implements ShaderEffectManager,
 
     @SubscribeEvent
     public void onResolutionChanged(ResolutionChangeCallback event) {
-        System.out.println("423");
-
         if (!Satin.areShadersDisabled() && !managedShaders.isEmpty()) {
             for (ResettableManagedShaderBase<?> ss : managedShaders) {
                 if (ss.isInitialized()) {

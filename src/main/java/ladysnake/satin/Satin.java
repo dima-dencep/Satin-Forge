@@ -51,8 +51,6 @@ public class Satin {
 
     @SubscribeEvent
     public void onRegisterReloadEvent(RegisterClientReloadListenersEvent event) {
-        System.out.println("123");
-
         // Subscribe the shader manager to MinecraftClient's resource manager to reload shaders like normal assets.
         event.registerReloadListener(ReloadableShaderEffectManager.INSTANCE);
     }
