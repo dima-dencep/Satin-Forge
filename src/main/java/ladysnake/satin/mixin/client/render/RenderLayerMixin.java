@@ -34,7 +34,7 @@ public abstract class RenderLayerMixin extends RenderPhase {
         TextureBase getTexture();
 
         @Accessor
-        RenderPhase.ShaderProgram getProgram();
+        RenderPhase.Shader getShader();
 
         @Accessor
         RenderPhase.Transparency getTransparency();

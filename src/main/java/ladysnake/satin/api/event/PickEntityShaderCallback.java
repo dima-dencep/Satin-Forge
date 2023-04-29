@@ -17,7 +17,7 @@
  */
 package ladysnake.satin.api.event;
 
-import net.minecraft.client.gl.PostEffectProcessor;
+import net.minecraft.client.gl.ShaderEffect;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Identifier;
 import net.minecraftforge.eventbus.api.Event;
@@ -29,12 +29,12 @@ import java.util.function.Supplier;
 public class PickEntityShaderCallback extends Event {
     public @Nullable Entity entity;
     public Consumer<Identifier> loadShaderFunc;
-    public Supplier<PostEffectProcessor> appliedShaderGetter;
+    public Supplier<ShaderEffect> appliedShaderGetter;
 
     /**
      * Fired in {@link net.minecraft.client.render.GameRenderer#onCameraEntitySet(Entity)}
      */
-    public PickEntityShaderCallback(@Nullable Entity entity, Consumer<Identifier> loadShaderFunc, Supplier<PostEffectProcessor> appliedShaderGetter) {
+    public PickEntityShaderCallback(@Nullable Entity entity, Consumer<Identifier> loadShaderFunc, Supplier<ShaderEffect> appliedShaderGetter) {
         this.entity = entity;
         this.loadShaderFunc = loadShaderFunc;
         this.appliedShaderGetter = appliedShaderGetter;
