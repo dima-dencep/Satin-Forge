@@ -69,14 +69,12 @@ public final class SatinMixinPlugin implements IMixinConfigPlugin {
     }
 
     @Override
-    public List<String> getMixins() { // TODO oculus compat?
-        /*List<String> compatMixins = new ArrayList<>();
+    public List<String> getMixins() {
+        List<String> compatMixins = new ArrayList<>();
         if (LoadingModList.get().getModFileById("oculus") != null) {
             compatMixins.add("iris.IrisRenderLayerWrapperMixin");
         }
-        return compatMixins;*/
-
-        return null;
+        return compatMixins;
     }
 
     @Override
