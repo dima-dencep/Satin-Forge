@@ -6,7 +6,7 @@ plugins {
 
 archivesBaseName = project.archives_base_name
 group = project.maven_group
-version = project.mod_version
+version = "$project.minecraft_version+$project.mod_version"
 
 sourceSets {
     testmod {
