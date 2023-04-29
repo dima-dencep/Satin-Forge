@@ -72,7 +72,7 @@ public abstract class JsonEffectGlShaderMixin implements SamplerAccess {
      * @param id the actual id passed as an argument to the method
      * @return a new Identifier
      */
-    @Redirect(
+    /*@Redirect( TODO Already patched by forge - https://github.com/MinecraftForge/MinecraftForge/blob/1.19.x/patches/minecraft/net/minecraft/client/renderer/EffectInstance.java.patch
             at = @At(
                     value = "NEW",
                     target = "net/minecraft/util/Identifier",
@@ -86,14 +86,14 @@ public abstract class JsonEffectGlShaderMixin implements SamplerAccess {
         }
         Identifier split = new Identifier(id);
         return new Identifier(split.getNamespace(), "shaders/program/" + split.getPath() + ".json");
-    }
+    }*/
 
     /**
      * @param arg the string passed to the redirected Identifier constructor
      * @param id the actual id passed as an argument to the method
      * @return a new Identifier
      */
-    @Redirect(
+    /*@Redirect( TODO Already patched by forge - https://github.com/MinecraftForge/MinecraftForge/blob/1.19.x/patches/minecraft/net/minecraft/client/renderer/EffectInstance.java.patch
             at = @At(
                     value = "NEW",
                     target = "net/minecraft/util/Identifier",
@@ -107,5 +107,5 @@ public abstract class JsonEffectGlShaderMixin implements SamplerAccess {
         }
         Identifier split = new Identifier(id);
         return new Identifier(split.getNamespace(), "shaders/program/" + split.getPath() + shaderType.getFileExtension());
-    }
+    }*/
 }

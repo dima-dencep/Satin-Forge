@@ -19,14 +19,13 @@ package ladysnake.satintestcore;
 
 import ladysnake.satintestcore.block.SatinTestBlocks;
 import ladysnake.satintestcore.item.SatinTestItems;
-import net.fabricmc.api.ModInitializer;
+import net.minecraftforge.eventbus.api.IEventBus;
 
-public class SatinTestCore implements ModInitializer {
+public class SatinTestCore {
     public static final String MOD_ID = "satintestcore";
 
-    @Override
-    public void onInitialize() {
-        SatinTestBlocks.init();
-        SatinTestItems.init();
+    public SatinTestCore(IEventBus bus) {
+        SatinTestBlocks.init(bus);
+        SatinTestItems.init(bus);
     }
 }

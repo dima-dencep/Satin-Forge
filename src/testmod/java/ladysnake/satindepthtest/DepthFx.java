@@ -26,19 +26,20 @@ import ladysnake.satin.api.managed.uniform.Uniform1f;
 import ladysnake.satin.api.managed.uniform.Uniform3f;
 import ladysnake.satin.api.managed.uniform.UniformMat4;
 import ladysnake.satin.api.util.GlMatrices;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.Camera;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.jetbrains.annotations.Nullable;
+import net.minecraft.util.math.Matrix4f;
 
-public class DepthFx implements PostWorldRenderCallback, ShaderEffectRenderCallback, ClientTickEvents.EndTick {
+public class DepthFx {
     public static final Identifier FANCY_NIGHT_SHADER_ID = new Identifier(SatinDepthTest.MOD_ID, "shaders/post/rainbow_ping.json");
     public static final DepthFx INSTANCE = new DepthFx();
 
@@ -66,29 +67,29 @@ public class DepthFx implements PostWorldRenderCallback, ShaderEffectRenderCallb
         return false;
     }
 
-    @Override
-    public void onEndTick(MinecraftClient minecraftClient) {
-        if (!minecraftClient.isPaused()) {
+    @SubscribeEvent
+    public void onEndTick(TickEvent.ClientTickEvent event) {
+        if (event.phase == TickEvent.Phase.END && !this.mc.isPaused()) {
             ticks++;
         }
     }
 
-    @Override
-    public void onWorldRendered(Camera camera, float tickDelta, long nanoTime) {
+    @SubscribeEvent
+    public void onWorldRendered(PostWorldRenderCallback event) {
         MinecraftClient mc = MinecraftClient.getInstance();
         if (isWorldNight(mc.player)) {
-            uniformSTime.set((ticks + tickDelta) / 20f);
+            uniformSTime.set((ticks + event.tickDelta) / 20f);
             uniformInverseTransformMatrix.set(GlMatrices.getInverseTransformMatrix(projectionMatrix));
-            Vec3d cameraPos = camera.getPos();
+            Vec3d cameraPos = event.camera.getPos();
             uniformCameraPosition.set((float)cameraPos.x, (float)cameraPos.y, (float)cameraPos.z);
-            Entity e = camera.getFocusedEntity();
-            uniformCenter.set(lerpf(e.getX(), e.prevX, tickDelta), lerpf(e.getY(), e.prevY, tickDelta), lerpf(e.getZ(), e.prevZ, tickDelta));
+            Entity e = event.camera.getFocusedEntity();
+            uniformCenter.set(lerpf(e.getX(), e.prevX, event.tickDelta), lerpf(e.getY(), e.prevY, event.tickDelta), lerpf(e.getZ(), e.prevZ, event.tickDelta));
         }
     }
 
-    @Override
-    public void renderShaderEffects(float tickDelta) {
-        testShader.render(tickDelta);
+    @SubscribeEvent
+    public void renderShaderEffects(ShaderEffectRenderCallback event) {
+        testShader.render(event.tickDelta);
     }
 
     private static float lerpf(double n, double prevN, float tickDelta) {

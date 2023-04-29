@@ -24,6 +24,7 @@ import net.minecraft.client.gl.ShaderEffect;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Identifier;
+import net.minecraftforge.common.MinecraftForge;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -42,14 +43,14 @@ public abstract class GameRendererMixin {
     @Shadow protected abstract void loadShader(Identifier location);
 
     /**
-     * Fires {@link ShaderEffectRenderCallback#EVENT}
+     * Fires {@link ShaderEffectRenderCallback}
      */
     @Inject(
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/WorldRenderer;drawEntityOutlinesFramebuffer()V", shift = AFTER),
             method = "render"
     )
     private void hookShaderRender(float tickDelta, long nanoTime, boolean renderLevel, CallbackInfo info) {
-        ShaderEffectRenderCallback.EVENT.invoker().renderShaderEffects(tickDelta);
+        MinecraftForge.EVENT_BUS.post(new ShaderEffectRenderCallback(tickDelta));
     }
 
     @Inject(
@@ -61,7 +62,7 @@ public abstract class GameRendererMixin {
     }
 
     /**
-     * Fires {@link PickEntityShaderCallback#EVENT}
+     * Fires {@link PickEntityShaderCallback}
      * Disabled by optifine
      */
     @Inject(method = "onCameraEntitySet", at = @At(value = "RETURN"), require = 0)
@@ -69,7 +70,7 @@ public abstract class GameRendererMixin {
         if (this.shader == null) {
             // Mixin does not like method references to shadowed methods
             //noinspection Convert2MethodRef
-            PickEntityShaderCallback.EVENT.invoker().pickEntityShader(entity, loc -> this.loadShader(loc), () -> this.shader);
+            MinecraftForge.EVENT_BUS.post(new PickEntityShaderCallback(entity, loc -> this.loadShader(loc), () -> this.shader));
         }
     }
 }

@@ -17,20 +17,18 @@
  */
 package ladysnake.satin.api.event;
 
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
+import net.minecraftforge.eventbus.api.Event;
 
-@FunctionalInterface
-public interface ResolutionChangeCallback {
+public class ResolutionChangeCallback extends Event {
+    public int newWidth;
+    public int newHeight;
+
     /**
      * Fired each time Minecraft's window resolution changes
      */
-    Event<ResolutionChangeCallback> EVENT = EventFactory.createArrayBacked(ResolutionChangeCallback.class,
-            (listeners) -> (newWidth, newHeight) -> {
-                for (ResolutionChangeCallback event : listeners) {
-                    event.onResolutionChanged(newWidth, newHeight);
-                }
-            });
+    public ResolutionChangeCallback(int newWidth, int newHeight) {
+        this.newWidth = newWidth;
+        this.newHeight = newHeight;
+    }
 
-    void onResolutionChanged(int newWidth, int newHeight);
 }

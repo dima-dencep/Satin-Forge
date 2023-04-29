@@ -58,7 +58,7 @@ public abstract class CoreShaderMixin implements SamplerAccess {
     /**
      * @see JsonEffectGlShaderMixin#constructProgramIdentifier(String, ResourceManager, String)
      */
-    @Redirect(method = "<init>", at = @At(value = "NEW", target = "net/minecraft/util/Identifier", ordinal = 0))
+    /*@Redirect(method = "<init>", at = @At(value = "NEW", target = "net/minecraft/util/Identifier", ordinal = 0)) TODO already patched by forge
     private Identifier fixId(String arg, ResourceFactory factory, String name, VertexFormat format) {
         if (!name.contains(":")) {
             return new Identifier(arg);
@@ -74,6 +74,6 @@ public abstract class CoreShaderMixin implements SamplerAccess {
         }
         Identifier split = new Identifier(name);
         return split.getNamespace() + ":shaders/core/" + split.getPath() + type.getFileExtension();
-    }
+    }*/
 
 }

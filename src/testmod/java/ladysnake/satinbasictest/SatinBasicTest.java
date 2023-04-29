@@ -21,11 +21,13 @@ import ladysnake.satin.api.event.ShaderEffectRenderCallback;
 import ladysnake.satin.api.managed.ManagedShaderEffect;
 import ladysnake.satin.api.managed.ShaderEffectManager;
 import ladysnake.satin.api.managed.uniform.Uniform4f;
-import ladysnake.satintestcore.item.SatinTestItems;
-import net.fabricmc.api.ClientModInitializer;
+import ladysnake.satintestcore.item.DebugItem;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraft.util.Identifier;
 
-public final class SatinBasicTest implements ClientModInitializer {
+public final class SatinBasicTest {
     public static final String MOD_ID = "satinbasictest";
 
     private boolean renderingBlit = false;
@@ -33,19 +35,21 @@ public final class SatinBasicTest implements ClientModInitializer {
     private final ManagedShaderEffect testShader = ShaderEffectManager.getInstance().manage(new Identifier(MOD_ID, "shaders/post/blit.json"));
     private final Uniform4f color = testShader.findUniform4f("ColorModulate");
 
-    @Override
-    public void onInitializeClient() {
-        ShaderEffectRenderCallback.EVENT.register(tickDelta -> {
-            if (renderingBlit) {
-                testShader.render(tickDelta);
-            }
-        });
-        SatinTestItems.DEBUG_ITEM.registerDebugCallback((world, player, hand) -> {
+    public SatinBasicTest(IEventBus bus) {
+        MinecraftForge.EVENT_BUS.register(this);
+
+        DebugItem.registerDebugCallback((world, player, hand) -> {
             if (world.isClient) {
                 renderingBlit = !renderingBlit;
                 color.set((float) Math.random(), (float) Math.random(), (float) Math.random(), 1.0f);
             }
         });
     }
-}
 
+    @SubscribeEvent
+    public void onShaderEffectRender(ShaderEffectRenderCallback event) {
+        if (renderingBlit) {
+            testShader.render(event.tickDelta);
+        }
+    }
+}

@@ -17,30 +17,27 @@
  */
 package ladysnake.satin.api.event;
 
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.client.gl.ShaderEffect;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Identifier;
+import net.minecraftforge.eventbus.api.Event;
 
 import javax.annotation.Nullable;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public interface PickEntityShaderCallback {
+public class PickEntityShaderCallback extends Event {
+    public @Nullable Entity entity;
+    public Consumer<Identifier> loadShaderFunc;
+    public Supplier<ShaderEffect> appliedShaderGetter;
+
     /**
      * Fired in {@link net.minecraft.client.render.GameRenderer#onCameraEntitySet(Entity)}
      */
-    Event<PickEntityShaderCallback> EVENT = EventFactory.createArrayBacked(PickEntityShaderCallback.class,
-            (listeners) -> (entity, loadShaderFunc, appliedShaderGetter) -> {
-                for (PickEntityShaderCallback handler : listeners) {
-                    handler.pickEntityShader(entity, loadShaderFunc, appliedShaderGetter);
-                    // Allow listeners to set the shader themselves if they need to configure it
-                    if (appliedShaderGetter.get() != null) {
-                        break;
-                    }
-                }
-            });
+    public PickEntityShaderCallback(@Nullable Entity entity, Consumer<Identifier> loadShaderFunc, Supplier<ShaderEffect> appliedShaderGetter) {
+        this.entity = entity;
+        this.loadShaderFunc = loadShaderFunc;
+        this.appliedShaderGetter = appliedShaderGetter;
+    }
 
-    void pickEntityShader(@Nullable Entity entity, Consumer<Identifier> loadShaderFunc, Supplier<ShaderEffect> appliedShaderGetter);
 }
