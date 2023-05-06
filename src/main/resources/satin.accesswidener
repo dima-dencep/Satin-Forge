@@ -11,3 +11,5 @@ accessible  class net/minecraft/client/render/RenderPhase$LineWidth
 accessible  class net/minecraft/client/render/RenderPhase$Toggleable
 accessible  class net/minecraft/client/render/RenderPhase$OffsetTexturing
 accessible  class net/minecraft/client/render/RenderPhase$Textures
+
+accessible field net/minecraft/client/gl/ShaderEffect passes Ljava/util/List;

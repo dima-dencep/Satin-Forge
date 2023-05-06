@@ -67,11 +67,11 @@ public class RenderLayerSupplier {
      */
     private static class Helper extends RenderPhase {
         public static RenderPhase makeShader(Supplier<net.minecraft.client.render.Shader> shader) {
-            return new Shader(shader);
+            return new net.minecraft.client.render.RenderPhase.Shader(shader);
         }
 
         public static void applyShader(RenderLayer.MultiPhaseParameters.Builder builder, RenderPhase shader) {
-            builder.shader((Shader) shader);
+            builder.shader((net.minecraft.client.render.RenderPhase.Shader) shader);
         }
 
         private Helper(String name, Runnable beginAction, Runnable endAction) {
