@@ -29,7 +29,7 @@ import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraft.util.math.Matrix4f;
+import org.joml.Matrix4f;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -74,9 +74,9 @@ public abstract class WorldRendererMixin {
 
     @Inject(
             method = "render",
-            slice = @Slice(from = @At(value = "FIELD:LAST", opcode = Opcodes.GETFIELD, target = "Lnet/minecraft/client/render/WorldRenderer;transparencyShader:Lnet/minecraft/client/gl/ShaderEffect;")),
+            slice = @Slice(from = @At(value = "FIELD:LAST", opcode = Opcodes.GETFIELD, target = "Lnet/minecraft/client/render/WorldRenderer;transparencyPostProcessor:Lnet/minecraft/client/gl/PostEffectProcessor;")),
             at = {
-                    @At(value = "INVOKE", target = "Lnet/minecraft/client/gl/ShaderEffect;render(F)V"),
+                    @At(value = "INVOKE", target = "Lnet/minecraft/client/gl/PostEffectProcessor;render(F)V"),
                     @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;depthMask(Z)V", ordinal = 1, shift = At.Shift.AFTER)
             }
     )

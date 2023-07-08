@@ -20,7 +20,7 @@ package ladysnake.satin.mixin.client.event;
 import ladysnake.satin.api.event.PickEntityShaderCallback;
 import ladysnake.satin.api.event.ShaderEffectRenderCallback;
 import ladysnake.satin.impl.ReloadableShaderEffectManager;
-import net.minecraft.client.gl.ShaderEffect;
+import net.minecraft.client.gl.PostEffectProcessor;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.resource.ResourceFactory;
@@ -43,9 +43,9 @@ public abstract class GameRendererMixin {
 
 
     @Shadow @Nullable
-    ShaderEffect shader;
+    PostEffectProcessor postProcessor;
 
-    @Shadow protected abstract void loadShader(Identifier location);
+    @Shadow abstract void loadPostProcessor(Identifier id);
 
     /**
      * Fires {@link ShaderEffectRenderCallback}
@@ -64,14 +64,14 @@ public abstract class GameRendererMixin {
      */
     @Inject(method = "onCameraEntitySet", at = @At(value = "RETURN"), require = 0)
     private void useCustomEntityShader(@Nullable Entity entity, CallbackInfo info) {
-        if (this.shader == null) {
+        if (this.postProcessor == null) {
             // Mixin does not like method references to shadowed methods
             //noinspection Convert2MethodRef
-            MinecraftForge.EVENT_BUS.post(new PickEntityShaderCallback(entity, loc -> this.loadShader(loc), () -> this.shader));
+            MinecraftForge.EVENT_BUS.post(new PickEntityShaderCallback(entity, loc -> this.loadPostProcessor(loc), () -> this.postProcessor));
         }
     }
 
-    @Inject(method = "preloadShaders", at = @At(value = "RETURN"))
+    @Inject(method = "loadPrograms", at = @At(value = "RETURN"))
     private void loadSatinPrograms(ResourceFactory factory, CallbackInfo ci) {
         ReloadableShaderEffectManager.INSTANCE.reload(factory);
     }
