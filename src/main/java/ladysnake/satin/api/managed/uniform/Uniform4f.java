@@ -18,7 +18,7 @@
 package ladysnake.satin.api.managed.uniform;
 
 import org.apiguardian.api.API;
-import org.joml.Vector4f;
+import net.minecraft.util.math.Vector4f;
 
 import static org.apiguardian.api.API.Status.MAINTAINED;
 

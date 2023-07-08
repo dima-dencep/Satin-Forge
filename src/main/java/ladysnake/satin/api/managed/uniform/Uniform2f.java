@@ -18,7 +18,7 @@
 package ladysnake.satin.api.managed.uniform;
 
 import org.apiguardian.api.API;
-import org.joml.Vector2f;
+import net.minecraft.util.math.Vec2f;
 
 import static org.apiguardian.api.API.Status.MAINTAINED;
 
@@ -42,5 +42,5 @@ public interface Uniform2f {
      * @param value the vector of new values
      */
     @API(status = MAINTAINED, since = "1.11.0")
-    void set(Vector2f value);
+    void set(Vec2f value);
 }
