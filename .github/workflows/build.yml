@@ -41,7 +41,7 @@ jobs:
         uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "${{ steps.read_property.outputs.minecraft_version }}-${{ steps.read_property.outputs.mod_version }}-${{ github.run_number }}"
+          automatic_release_tag: "${{ steps.read_property.outputs.minecraft_version }}-${{ steps.read_property.outputs.mod_version }}"
           prerelease: false
           title: "Satin ${{ steps.read_property.outputs.mod_version }} for Minecraft ${{ steps.read_property.outputs.minecraft_version }}"
           files: |
