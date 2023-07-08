@@ -1,12 +1,12 @@
 modLoader = "javafml"
 loaderVersion = "*"
-issueTrackerURL = "https://github.com/dimadencep/Satin/issues"
+issueTrackerURL = "https://github.com/dimadencep/Satin-Forge/issues"
 license = "LGPL-3.0-or-later"
 
 [[mods]]
 modId = "satin"
 version = "${version}"
-displayURL = "https://github.com/dimadencep/Satin"
+displayURL = "https://github.com/dimadencep/Satin-Forge"
 displayName = "Satin Forge"
 authors = "dima_dencep, Pyrofab"
 description = "Easy shaders for all modders"
@@ -23,6 +23,6 @@ side = "BOTH"
 [[dependencies.satin]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.19.2,)"
+versionRange = "[1.19,)"
 ordering = "NONE"
 side = "BOTH"
