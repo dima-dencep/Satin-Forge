@@ -22,7 +22,7 @@ import ladysnake.satin.Satin;
 import ladysnake.satin.api.managed.ManagedCoreShader;
 import ladysnake.satin.api.managed.uniform.SamplerUniform;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gl.ShaderProgram;
+import net.minecraft.client.render.Shader;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.resource.ResourceManager;
@@ -33,7 +33,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
-public final class ResettableManagedCoreShader extends ResettableManagedShaderBase<ShaderProgram> implements ManagedCoreShader {
+public final class ResettableManagedCoreShader extends ResettableManagedShaderBase<Shader> implements ManagedCoreShader {
     /**
      * Callback to run once each time the shader effect is initialized
      */
@@ -53,9 +53,9 @@ public final class ResettableManagedCoreShader extends ResettableManagedShaderBa
     }
 
     @Override
-    protected ShaderProgram parseShader(ResourceManager resourceManager, MinecraftClient mc, Identifier location) throws IOException {
+    protected Shader parseShader(ResourceManager resourceManager, MinecraftClient mc, Identifier location) throws IOException {
         // Easiest way of getting modded shader locations to work
-        return new ShaderProgram(resourceManager, this.getLocation(), this.vertexFormat);
+        return new Shader(resourceManager, this.getLocation(), this.vertexFormat);
     }
 
     @Override
@@ -68,7 +68,7 @@ public final class ResettableManagedCoreShader extends ResettableManagedShaderBa
     }
 
     @Override
-    public ShaderProgram getProgram() {
+    public Shader getProgram() {
         return this.shader;
     }
 
@@ -78,7 +78,7 @@ public final class ResettableManagedCoreShader extends ResettableManagedShaderBa
     }
 
     @Override
-    protected boolean setupUniform(ManagedUniformBase uniform, ShaderProgram shader) {
+    protected boolean setupUniform(ManagedUniformBase uniform, Shader shader) {
         return uniform.findUniformTarget(shader);
     }
 

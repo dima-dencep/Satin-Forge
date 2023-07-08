@@ -18,7 +18,7 @@
 package ladysnake.satin.mixin.client.gl;
 
 import ladysnake.satin.impl.SamplerAccess;
-import net.minecraft.client.gl.ShaderProgram;
+import net.minecraft.client.render.Shader;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -27,7 +27,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 import java.util.List;
 import java.util.Map;
 
-@Mixin(ShaderProgram.class)
+@Mixin(Shader.class)
 public abstract class CoreShaderMixin implements SamplerAccess {
     @Shadow @Final private Map<String, Object> samplers;
 
