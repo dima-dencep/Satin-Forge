@@ -25,7 +25,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.Shader;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexFormat;
-import net.minecraft.resource.ResourceManager;
+import net.minecraft.resource.ResourceFactory;
 import net.minecraft.util.Identifier;
 
 import java.io.IOException;
@@ -53,7 +53,7 @@ public final class ResettableManagedCoreShader extends ResettableManagedShaderBa
     }
 
     @Override
-    protected Shader parseShader(ResourceManager resourceManager, MinecraftClient mc, Identifier location) throws IOException {
+    protected Shader parseShader(ResourceFactory resourceManager, MinecraftClient mc, Identifier location) throws IOException {
         // Easiest way of getting modded shader locations to work
         return new Shader(resourceManager, this.getLocation(), this.vertexFormat);
     }

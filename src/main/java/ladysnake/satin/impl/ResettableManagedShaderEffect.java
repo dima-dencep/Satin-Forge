@@ -31,7 +31,7 @@ import net.minecraft.client.gl.Framebuffer;
 import net.minecraft.client.gl.JsonEffectGlShader;
 import net.minecraft.client.gl.ShaderEffect;
 import net.minecraft.client.texture.AbstractTexture;
-import net.minecraft.resource.ResourceManager;
+import net.minecraft.resource.ResourceFactory;
 import net.minecraft.util.Identifier;
 import org.apiguardian.api.API;
 import net.minecraft.util.math.Matrix4f;
@@ -89,8 +89,9 @@ public final class ResettableManagedShaderEffect extends ResettableManagedShader
     }
 
     @Override
-    protected ShaderEffect parseShader(ResourceManager resourceManager, MinecraftClient mc, Identifier location) throws IOException {
-        return new ShaderEffect(mc.getTextureManager(), resourceManager, mc.getFramebuffer(), location);
+    protected ShaderEffect parseShader(ResourceFactory resourceFactory, MinecraftClient mc, Identifier location) throws IOException {
+        return new ShaderEffect(mc.getTextureManager(), mc.getResourceManager(), mc.getFramebuffer(), location);
+
     }
 
     @Override
