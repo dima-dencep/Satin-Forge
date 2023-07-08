@@ -19,7 +19,7 @@ package ladysnake.satin.api.util;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import org.apiguardian.api.API;
-import net.minecraft.util.math.Matrix4f;
+import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
@@ -115,9 +115,9 @@ public final class GlMatrices {
     public static Matrix4f getInverseTransformMatrix(Matrix4f outMat) {
         Matrix4f projection = RenderSystem.getProjectionMatrix();
         Matrix4f modelView = RenderSystem.getModelViewMatrix();
-        outMat.loadIdentity();
-        outMat.multiply(projection);
-        outMat.multiply(modelView);
+        outMat.identity();
+        outMat.mul(projection);
+        outMat.mul(modelView);
         outMat.invert();
         return outMat;
     }

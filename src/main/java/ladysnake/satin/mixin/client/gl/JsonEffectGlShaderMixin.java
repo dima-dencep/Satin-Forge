@@ -18,8 +18,8 @@
 package ladysnake.satin.mixin.client.gl;
 
 import ladysnake.satin.impl.SamplerAccess;
-import net.minecraft.client.gl.JsonEffectGlShader;
-import net.minecraft.client.gl.Program;
+import net.minecraft.client.gl.JsonEffectShaderProgram;
+import net.minecraft.client.gl.ShaderStage;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Final;
@@ -37,7 +37,7 @@ import java.util.function.IntSupplier;
  * Minecraft does not take into account domains when parsing a shader program.
  * These hooks redirect identifier instantiations to allow specifying a domain for shader files.
  */
-@Mixin(JsonEffectGlShader.class)
+@Mixin(JsonEffectShaderProgram.class)
 public abstract class JsonEffectGlShaderMixin implements SamplerAccess {
     @Shadow @Final private Map<String, IntSupplier> samplerBinds;
 
@@ -56,7 +56,7 @@ public abstract class JsonEffectGlShaderMixin implements SamplerAccess {
     public abstract List<String> satin$getSamplerNames();
 
     @Override
-    @Accessor("samplerShaderLocs")
+    @Accessor("samplerLocations")
     public abstract List<Integer> satin$getSamplerShaderLocs();
 
     /**
@@ -72,7 +72,7 @@ public abstract class JsonEffectGlShaderMixin implements SamplerAccess {
      * @param id the actual id passed as an argument to the method
      * @return a new Identifier
      */
-    /*@Redirect( TODO Already patched by forge - https://github.com/MinecraftForge/MinecraftForge/blob/1.19.x/patches/minecraft/net/minecraft/client/renderer/EffectInstance.java.patch
+    /*@Redirect( TODO Already patched by forge - https://github.com/MinecraftForge/MinecraftForge/blob/1.20.x/patches/minecraft/net/minecraft/client/renderer/EffectInstance.java.patch
             at = @At(
                     value = "NEW",
                     target = "net/minecraft/util/Identifier",
@@ -93,7 +93,7 @@ public abstract class JsonEffectGlShaderMixin implements SamplerAccess {
      * @param id the actual id passed as an argument to the method
      * @return a new Identifier
      */
-    /*@Redirect( TODO Already patched by forge - https://github.com/MinecraftForge/MinecraftForge/blob/1.19.x/patches/minecraft/net/minecraft/client/renderer/EffectInstance.java.patch
+    /*@Redirect( TODO Already patched by forge - https://github.com/MinecraftForge/MinecraftForge/blob/1.20.x/patches/minecraft/net/minecraft/client/renderer/EffectInstance.java.patch
             at = @At(
                     value = "NEW",
                     target = "net/minecraft/util/Identifier",

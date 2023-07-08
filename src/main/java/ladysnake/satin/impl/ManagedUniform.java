@@ -27,12 +27,12 @@ import ladysnake.satin.api.managed.uniform.Uniform4f;
 import ladysnake.satin.api.managed.uniform.Uniform4i;
 import ladysnake.satin.api.managed.uniform.UniformMat4;
 import net.minecraft.client.gl.GlUniform;
-import net.minecraft.client.gl.PostProcessShader;
-import net.minecraft.client.render.Shader;
-import net.minecraft.util.math.Matrix4f;
-import net.minecraft.util.math.Vec2f;
-import net.minecraft.util.math.Vec3f;
-import net.minecraft.util.math.Vector4f;
+import net.minecraft.client.gl.PostEffectPass;
+import net.minecraft.client.gl.ShaderProgram;
+import org.joml.Matrix4f;
+import org.joml.Vector2f;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 import java.util.List;
 import java.util.Objects;
@@ -52,9 +52,9 @@ public final class ManagedUniform extends ManagedUniformBase implements
     }
 
     @Override
-    public boolean findUniformTargets(List<PostProcessShader> shaders) {
+    public boolean findUniformTargets(List<PostEffectPass> shaders) {
         this.targets = shaders.stream()
-                .map(PostProcessShader::getProgram)
+                .map(PostEffectPass::getProgram)
                 .map(s -> s.getUniformByName(this.name))
                 .filter(Objects::nonNull)
                 .toArray(GlUniform[]::new);
@@ -63,7 +63,7 @@ public final class ManagedUniform extends ManagedUniformBase implements
     }
 
     @Override
-    public boolean findUniformTarget(Shader shader) {
+    public boolean findUniformTarget(ShaderProgram shader) {
         GlUniform uniform = shader.getUniform(this.name);
         if (uniform != null) {
             this.targets = new GlUniform[] {uniform};
@@ -184,8 +184,8 @@ public final class ManagedUniform extends ManagedUniformBase implements
     }
 
     @Override
-    public void set(Vec2f value) {
-        set(value.x, value.y);
+    public void set(Vector2f value) {
+        set(value.x(), value.y());
     }
 
     @Override
@@ -206,8 +206,8 @@ public final class ManagedUniform extends ManagedUniformBase implements
     }
 
     @Override
-    public void set(Vec3f value) {
-        set(value.getX(), value.getY(), value.getZ());
+    public void set(Vector3f value) {
+        set(value.x(), value.y(), value.z());
     }
 
     @Override
@@ -230,7 +230,7 @@ public final class ManagedUniform extends ManagedUniformBase implements
 
     @Override
     public void set(Vector4f value) {
-        set(value.getX(), value.getY(), value.getZ(), value.getW());
+        set(value.x(), value.y(), value.z(), value.w());
     }
 
     @Override
