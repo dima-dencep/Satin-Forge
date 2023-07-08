@@ -30,6 +30,9 @@ import net.minecraft.client.gl.GlUniform;
 import net.minecraft.client.gl.PostProcessShader;
 import net.minecraft.client.render.Shader;
 import net.minecraft.util.math.Matrix4f;
+import net.minecraft.util.math.Vec2f;
+import net.minecraft.util.math.Vec3f;
+import net.minecraft.util.math.Vector4f;
 
 import java.util.List;
 import java.util.Objects;
@@ -39,7 +42,7 @@ public final class ManagedUniform extends ManagedUniformBase implements
         Uniform1f, Uniform2f, Uniform3f, Uniform4f,
         UniformMat4 {
 
-    protected GlUniform[] targets = new GlUniform[0];
+    private GlUniform[] targets = new GlUniform[0];
     private int i0, i1, i2, i3;
     private float f0, f1, f2, f3;
     private boolean firstUpload = true;
@@ -181,6 +184,11 @@ public final class ManagedUniform extends ManagedUniformBase implements
     }
 
     @Override
+    public void set(Vec2f value) {
+        set(value.x, value.y);
+    }
+
+    @Override
     public void set(float value0, float value1, float value2) {
         GlUniform[] targets = this.targets;
         int nbTargets = targets.length;
@@ -195,6 +203,11 @@ public final class ManagedUniform extends ManagedUniformBase implements
                 firstUpload = false;
             }
         }
+    }
+
+    @Override
+    public void set(Vec3f value) {
+        set(value.getX(), value.getY(), value.getZ());
     }
 
     @Override
@@ -213,6 +226,11 @@ public final class ManagedUniform extends ManagedUniformBase implements
                 firstUpload = false;
             }
         }
+    }
+
+    @Override
+    public void set(Vector4f value) {
+        set(value.getX(), value.getY(), value.getZ(), value.getW());
     }
 
     @Override
