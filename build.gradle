@@ -15,16 +15,6 @@ sourceSets {
     }
 }
 
-loom {
-    runs {
-        testmodClient {
-            client()
-            name = "Testmod Client"
-            source sourceSets.testmod
-        }
-    }
-}
-
 repositories {
     maven {
         name = "Modrinth"
@@ -44,10 +34,7 @@ dependencies {
     compileOnly "com.google.code.findbugs:jsr305:${findbugs_version}"
     compileOnly "org.apiguardian:apiguardian-api:${apiguardian_version}"
 
-    testImplementation "org.junit.jupiter:junit-jupiter-api:5.4.0-M1"
 
-    testmodCompileOnly "org.jetbrains:annotations:${jb_annotations_version}"
-    testmodImplementation sourceSets.main.output
 }
 
 processResources {
