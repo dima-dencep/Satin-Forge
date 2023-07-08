@@ -71,8 +71,8 @@ public abstract class GameRendererMixin {
         }
     }
 
-    @Inject(method = "preloadShaders", at = @At(value = "RETURN"))
+    /*@Inject(method = "preloadShaders", at = @At(value = "RETURN"))
     private void loadSatinPrograms(ResourceFactory factory, CallbackInfo ci) {
         ReloadableShaderEffectManager.INSTANCE.reload(factory);
-    }
+    }*/
 }

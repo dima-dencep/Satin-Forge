@@ -18,8 +18,11 @@
 package ladysnake.satin;
 
 import ladysnake.satin.impl.ReloadableShaderEffectManager;
+import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apiguardian.api.API;
@@ -43,5 +46,13 @@ public class Satin {
 
     public Satin() {
         MinecraftForge.EVENT_BUS.addListener(ReloadableShaderEffectManager.INSTANCE::onResolutionChanged);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onRegisterReloadEvent);
+    }
+
+
+    @SubscribeEvent
+    public void onRegisterReloadEvent(RegisterClientReloadListenersEvent event) {
+        // Subscribe the shader manager to MinecraftClient's resource manager to reload shaders like normal assets.
+        event.registerReloadListener(ReloadableShaderEffectManager.INSTANCE);
     }
 }

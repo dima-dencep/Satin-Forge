@@ -26,6 +26,8 @@ import ladysnake.satin.api.managed.ShaderEffectManager;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.resource.ResourceFactory;
+import net.minecraft.resource.ResourceManager;
+import net.minecraft.resource.SynchronousResourceReloader;
 import net.minecraft.util.Identifier;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -38,7 +40,7 @@ import java.util.function.Consumer;
  * @see ShaderEffectManager
  * @see ResettableManagedShaderEffect
  */
-public final class ReloadableShaderEffectManager implements ShaderEffectManager {
+public final class ReloadableShaderEffectManager implements ShaderEffectManager, SynchronousResourceReloader {
     public static final ReloadableShaderEffectManager INSTANCE = new ReloadableShaderEffectManager();
     public static final Identifier SHADER_RESOURCE_KEY = new Identifier("dissolution:shaders");
 
@@ -107,7 +109,8 @@ public final class ReloadableShaderEffectManager implements ShaderEffectManager 
         managedShaders.remove(shader);
     }
 
-    public void reload(ResourceFactory shaderResources) {
+    @Override
+    public void reload(ResourceManager shaderResources) {
         for (ResettableManagedShaderBase<?> ss : managedShaders) {
             ss.initializeOrLog(shaderResources);
         }
