@@ -33,7 +33,7 @@ You can then add the library version to your `gradle.properties`file:
 satin_version = 1.x.y
 ```
 
-You can find the current version of Satin in the [releases](https://github.com/dimadencep/Satin/releases) tab of the repository on Github.
+You can find the current version of Satin in the [releases](https://github.com/dima-dencep/Satin-Forge/releases) tab of the repository on Github.
 
 ## Full documentation
 This [repository's wiki](https://github.com/Ladysnake/Satin/wiki) provides documentation to write and use shaders with Satin API.

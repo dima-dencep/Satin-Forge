@@ -6,24 +6,7 @@ plugins {
 
 archivesBaseName = project.archives_base_name
 group = project.maven_group
-version = "$project.minecraft_version+$project.mod_version"
-
-sourceSets {
-    testmod {
-        compileClasspath += main.compileClasspath
-        runtimeClasspath += main.runtimeClasspath
-    }
-}
-
-loom {
-    runs {
-        testmodClient {
-            client()
-            name = "Testmod Client"
-            source sourceSets.testmod
-        }
-    }
-}
+version = "$project.mod_version+$project.minecraft_version"
 
 repositories {
     maven {
@@ -36,18 +19,15 @@ dependencies {
     // To change the versions see the gradle.properties file
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-    forge "net.minecraftforge:forge:${project.forge_version}"
+    forge "net.minecraftforge:forge:${project.loader_version}"
 
-    modCompileOnly ("maven.modrinth:oculus:${project.iris_version}")
+    modCompileOnly modLocalRuntime("maven.modrinth:oculus:${project.iris_version}")
 
     compileOnly "org.jetbrains:annotations:${jb_annotations_version}"
     compileOnly "com.google.code.findbugs:jsr305:${findbugs_version}"
     compileOnly "org.apiguardian:apiguardian-api:${apiguardian_version}"
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:5.4.0-M1"
-
-    testmodCompileOnly "org.jetbrains:annotations:${jb_annotations_version}"
-    testmodImplementation sourceSets.main.output
 }
 
 processResources {
@@ -63,7 +43,6 @@ loom {
 
     forge {
         convertAccessWideners = true
-        extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
 
         mixinConfigs = [
                 "mixins.satin.client.json"
