@@ -4,6 +4,7 @@
   "package": "ladysnake.satin.mixin.client",
   "plugin": "ladysnake.satin.mixin.SatinMixinPlugin",
   "mixins": [
+    "AccessiblePassesShaderEffect",
     "blockrenderlayer.RenderLayerMixin",
     "blockrenderlayer.WorldRendererMixin",
     "event.GameRendererMixin",

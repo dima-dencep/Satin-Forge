@@ -25,6 +25,7 @@ import ladysnake.satin.api.managed.ManagedShaderEffect;
 import ladysnake.satin.api.managed.ShaderEffectManager;
 import ladysnake.satin.api.managed.uniform.SamplerUniformV2;
 import ladysnake.satin.api.util.ShaderPrograms;
+import ladysnake.satin.mixin.client.AccessiblePassesShaderEffect;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.Framebuffer;
 import net.minecraft.client.gl.JsonEffectGlShader;
@@ -244,9 +245,9 @@ public final class ResettableManagedShaderEffect extends ResettableManagedShader
     }
 
     public void setupDynamicUniforms(int index, Runnable dynamicSetBlock) {
-        ShaderEffect sg = this.getShaderEffect();
+        AccessiblePassesShaderEffect sg = (AccessiblePassesShaderEffect) this.getShaderEffect();
         if (sg != null) {
-            JsonEffectGlShader sm = sg.passes.get(index).getProgram();
+            JsonEffectGlShader sm = sg.getPasses().get(index).getProgram();
             ShaderPrograms.useShader(sm.getProgramRef());
             dynamicSetBlock.run();
             ShaderPrograms.useShader(0);
@@ -255,7 +256,7 @@ public final class ResettableManagedShaderEffect extends ResettableManagedShader
 
     @Override
     protected boolean setupUniform(ManagedUniformBase uniform, ShaderEffect shader) {
-        return uniform.findUniformTargets(shader.passes);
+        return uniform.findUniformTargets(((AccessiblePassesShaderEffect) shader).getPasses());
     }
 
     @Override
