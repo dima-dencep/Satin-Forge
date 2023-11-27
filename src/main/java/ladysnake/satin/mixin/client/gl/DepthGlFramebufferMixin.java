@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see <https://www.gnu.org/licenses>.
  */
-package ladysnake.satin.mixin.client.gl;
+/*package ladysnake.satin.mixin.client.gl;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.TextureUtil;
@@ -90,4 +90,4 @@ public abstract class DepthGlFramebufferMixin implements ReadableDepthFramebuffe
             glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, this.textureWidth, this.textureHeight);
         }
     }
-}
+}*/
