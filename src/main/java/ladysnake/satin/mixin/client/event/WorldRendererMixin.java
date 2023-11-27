@@ -78,7 +78,7 @@ public abstract class WorldRendererMixin {
             }
     )
     private void hookPostWorldRender(MatrixStack matrices, float tickDelta, long nanoTime, boolean renderBlockOutline, Camera camera, GameRenderer renderer, LightmapTextureManager lmTexManager, Matrix4f matrix4f, CallbackInfo ci) {
-        ((ReadableDepthFramebuffer) MinecraftClient.getInstance().getFramebuffer()).freezeDepthMap();
+        // ((ReadableDepthFramebuffer) MinecraftClient.getInstance().getFramebuffer()).freezeDepthMap();
         MinecraftForge.EVENT_BUS.post(new PostWorldRenderCallbackV2(matrices, camera, tickDelta, nanoTime));
     }
 }
