@@ -23,6 +23,9 @@ dependencies {
     modCompileOnly "maven.modrinth:oculus:${project.iris_version}"
 
     implementation "org.apiguardian:apiguardian-api:${apiguardian_version}"
+
+    implementation(annotationProcessor("io.github.llamalad7:mixinextras-common:0.2.1"))
+    implementation(include("io.github.llamalad7:mixinextras-forge:0.2.1"))
 }
 
 processResources {

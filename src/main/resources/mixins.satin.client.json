@@ -10,7 +10,6 @@
     "event.MinecraftClientMixin",
     "event.WorldRendererMixin",
     "gl.CoreShaderMixin",
-    "gl.DepthGlFramebufferMixin",
     "gl.CustomFormatFramebufferMixin",
     "gl.GlUniformMixin",
     "gl.JsonEffectGlShaderMixin",

@@ -17,11 +17,10 @@
  */
 package ladysnake.satin.mixin.client.event;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import ladysnake.satin.api.event.EntitiesPostRenderCallback;
 import ladysnake.satin.api.event.EntitiesPreRenderCallback;
 import ladysnake.satin.api.event.PostWorldRenderCallbackV2;
-import ladysnake.satin.api.experimental.ReadableDepthFramebuffer;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.Frustum;
 import net.minecraft.client.render.GameRenderer;
@@ -32,35 +31,23 @@ import net.minecraftforge.common.MinecraftForge;
 import org.joml.Matrix4f;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(WorldRenderer.class)
 public abstract class WorldRendererMixin {
-    @Unique
-    private Frustum frustum;
-
-    //TODO
-    @ModifyVariable(
-            method = "render",
-            at = @At(value = "CONSTANT", args = "stringValue=entities", ordinal = 0, shift = At.Shift.BEFORE)
-    )
-    private Frustum captureFrustum(Frustum frustum) {
-        this.frustum = frustum;
-        return frustum;
-    }
-
-
 
     @Inject(
             method = "render",
-            at = @At(value = "CONSTANT", args = "stringValue=entities", ordinal = 0)
+            at = @At(
+                    value = "CONSTANT",
+                    args = "stringValue=entities",
+                    ordinal = 0
+            )
     )
-    private void firePreRenderEntities(MatrixStack matrix, float tickDelta, long time, boolean renderBlockOutline, Camera camera, GameRenderer renderer, LightmapTextureManager lmTexManager, Matrix4f matrix4f, CallbackInfo ci) {
+    private void firePreRenderEntities(MatrixStack matrix, float tickDelta, long time, boolean renderBlockOutline, Camera camera, GameRenderer renderer, LightmapTextureManager lmTexManager, Matrix4f matrix4f, CallbackInfo ci, @Local Frustum frustum) {
         MinecraftForge.EVENT_BUS.post(new EntitiesPreRenderCallback(camera, frustum, tickDelta));
     }
 
@@ -68,7 +55,7 @@ public abstract class WorldRendererMixin {
             method = "render",
             at = @At(value = "CONSTANT", args = "stringValue=blockentities", ordinal = 0)
     )
-    private void firePostRenderEntities(MatrixStack matrix, float tickDelta, long time, boolean renderBlockOutline, Camera camera, GameRenderer renderer, LightmapTextureManager lmTexManager, Matrix4f matrix4f, CallbackInfo ci) {
+    private void firePostRenderEntities(MatrixStack matrix, float tickDelta, long time, boolean renderBlockOutline, Camera camera, GameRenderer renderer, LightmapTextureManager lmTexManager, Matrix4f matrix4f, CallbackInfo ci, @Local Frustum frustum) {
         MinecraftForge.EVENT_BUS.post(new EntitiesPostRenderCallback(camera, frustum, tickDelta));
     }
 
@@ -81,7 +68,7 @@ public abstract class WorldRendererMixin {
             }
     )
     private void hookPostWorldRender(MatrixStack matrices, float tickDelta, long nanoTime, boolean renderBlockOutline, Camera camera, GameRenderer renderer, LightmapTextureManager lmTexManager, Matrix4f matrix4f, CallbackInfo ci) {
-        ((ReadableDepthFramebuffer) MinecraftClient.getInstance().getFramebuffer()).freezeDepthMap();
+        // ((ReadableDepthFramebuffer) MinecraftClient.getInstance().getFramebuffer()).freezeDepthMap();
         MinecraftForge.EVENT_BUS.post(new PostWorldRenderCallbackV2(matrices, camera, tickDelta, nanoTime));
     }
 }
