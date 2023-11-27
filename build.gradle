@@ -1,6 +1,5 @@
 plugins {
-    id 'dev.architectury.loom' version "1.0.+"
-    id 'io.github.juuxel.loom-quiltflower' version "1.8.0"
+    id 'dev.architectury.loom' version "1.4-SNAPSHOT"
     id 'maven-publish'
 }
 
@@ -44,10 +43,6 @@ loom {
                 "mixins.satin.client.json"
         ]
     }
-}
-
-quiltflower {
-    addToRuntimeClasspath.set(true)
 }
 
 java {

@@ -2,7 +2,6 @@
   "required": true,
   "compatibilityLevel": "JAVA_16",
   "package": "ladysnake.satin.mixin.client",
-  "plugin": "ladysnake.satin.mixin.SatinMixinPlugin",
   "mixins": [
     "AccessiblePassesShaderEffect",
     "blockrenderlayer.RenderLayerMixin",
